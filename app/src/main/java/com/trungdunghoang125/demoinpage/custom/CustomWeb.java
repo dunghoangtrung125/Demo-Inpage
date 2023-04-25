@@ -18,8 +18,9 @@ public class CustomWeb extends WebView {
      * Area : Variable
      ********************************************************************** */
     private boolean handled;
-    private boolean disAllowIntercept;
     private boolean isClamp;
+    private boolean isClampX;
+    private boolean isClampY;
 
     /* **********************************************************************
      * Area : Constructor
@@ -45,12 +46,12 @@ public class CustomWeb extends WebView {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d("ontouch", "ontouch call");
-//        logger.info("Event = " + event.getAction() + " " + hashCode());
+        Log.w("duongmom", "webview receive this event = " + event);
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             handled = true;
             isClamp = false;
         }
+        //requestDisallowInterceptTouchEvent(false);
         return super.onTouchEvent(event);
     }
 
@@ -59,10 +60,11 @@ public class CustomWeb extends WebView {
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
         Log.d("duong", "clampX =  " + clampedX + " & clampY = " + clampedY);
         isClamp = clampedX || clampedY;
-        if (isClamp) {
-            disAllowIntercept = false;
-            requestDisallowInterceptTouchEvent(false);
-        }
+//        if (isClamp) {
+//            requestDisallowInterceptTouchEvent(false);
+//        }
+        isClampX = clampedX;
+        isClampY = clampedY;
         handled = !clampedX && !clampedY;
     }
 
@@ -77,13 +79,19 @@ public class CustomWeb extends WebView {
         return isClamp;
     }
 
-    public void resetClamp() {
-        isClamp = false;
-        requestDisallowInterceptTouchEvent(true);
+    public boolean isClampX() {
+        return isClampX;
     }
 
-    public boolean isAllowIntercept() {
-        return !disAllowIntercept;
+    public boolean isClampY() {
+        return isClampY;
+    }
+
+    public void resetClamp() {
+        isClamp = false;
+        isClampX = false;
+        isClampY = false;
+        requestDisallowInterceptTouchEvent(true);
     }
 
     /* **********************************************************************

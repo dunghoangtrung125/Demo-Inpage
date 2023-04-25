@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.trungdunghoang125.demoinpage.custom.CustomWeb;
 
@@ -40,9 +41,9 @@ public class OnTouchHandler implements View.OnTouchListener {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        //logger.info("onTouch param verify");
         if (blankView == null) return false;
         blankView.getGlobalVisibleRect(rect);
+        float x = event.getRawX();
         float y = event.getRawY();
         int action = event.getAction();
         switch (action) {
@@ -70,6 +71,7 @@ public class OnTouchHandler implements View.OnTouchListener {
                 break;
         }
 
+//        boolean isConsumeEvent = false;
 //        if (y >= rect.top && y <= rect.bottom) {
 //
 //            webView.onTouchEvent(event);
@@ -85,18 +87,24 @@ public class OnTouchHandler implements View.OnTouchListener {
 
         boolean isConsumeEvent = false;
         if (y >= rect.top && y <= rect.bottom) {
+            Log.e("duongmom", "check event = " + event);
+            Log.d("duong", "isClamp: " + webView.isClamp());
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 Log.d("duong", "Action Up");
                 webView.resetClamp();
                 webView.onTouchEvent(event);
             }
-            Log.d("duong", "isClamp: " + webView.isClamp());
-            if (!webView.isClamp()) {
+            else if (!webView.isClampX()) {
                 webView.onTouchEvent(event);
-                Log.d("duong", "event pass to webview =  " + event.getAction());
+                blankView.getParent().requestDisallowInterceptTouchEvent(true);
+                Log.i("duongmom", "event pass to webview =  " + event);
+            } else if (!webView.isClampY()) {
+                webView.onTouchEvent(event);
+                blankView.getParent().requestDisallowInterceptTouchEvent(false);
                 isConsumeEvent = true;
-
             } else {
+                blankView.getParent().requestDisallowInterceptTouchEvent(false);
+                webView.requestDisallowInterceptTouchEvent(true);
                 isConsumeEvent = true;
             }
         }
