@@ -18,9 +18,6 @@ public class CustomWeb extends WebView {
      * Area : Variable
      ********************************************************************** */
     private boolean handled;
-    private boolean isClamp;
-    private boolean isClampX;
-    private boolean isClampY;
 
     /* **********************************************************************
      * Area : Constructor
@@ -47,10 +44,7 @@ public class CustomWeb extends WebView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.w("duongmom", "webview receive this event = " + event);
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            handled = true;
-            isClamp = false;
-        }
+        // TODO stream ads
         //requestDisallowInterceptTouchEvent(false);
         return super.onTouchEvent(event);
     }
@@ -59,12 +53,10 @@ public class CustomWeb extends WebView {
     protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
         Log.d("duong", "clampX =  " + clampedX + " & clampY = " + clampedY);
-        isClamp = clampedX || clampedY;
+        // TODO : stream ads
 //        if (isClamp) {
 //            requestDisallowInterceptTouchEvent(false);
 //        }
-        isClampX = clampedX;
-        isClampY = clampedY;
         handled = !clampedX && !clampedY;
     }
 
@@ -75,22 +67,8 @@ public class CustomWeb extends WebView {
         return handled;
     }
 
-    public boolean isClamp() {
-        return isClamp;
-    }
-
-    public boolean isClampX() {
-        return isClampX;
-    }
-
-    public boolean isClampY() {
-        return isClampY;
-    }
-
-    public void resetClamp() {
-        isClamp = false;
-        isClampX = false;
-        isClampY = false;
+    public void resetHandled() {
+        handled = true;
         requestDisallowInterceptTouchEvent(true);
     }
 
